@@ -12,7 +12,7 @@ fi
 # 同时开了几个会话时，只让一个去装
 mkdir "$DATA/.installing" 2>/dev/null || exit 0
 trap 'rmdir "$DATA/.installing"' EXIT
-PY="${JEV_PYTHON:-$(command -v python3)}"
+PY="${JEV_PYTHON:-}"; if [ -z "$PY" ]; then for c in python3 python; do q=$(command -v $c) && "$q" -c "import sys; sys.exit(sys.version_info < (3, 10))" 2>/dev/null && PY="$q" && break; done; fi
 if [ -z "$PY" ] || ! "$PY" -c 'import sys; sys.exit(sys.version_info < (3, 10))'; then
   echo "jev: Python 3.10+ not found, hooks stay inactive" >> "$DATA/setup.log"
   exit 0
